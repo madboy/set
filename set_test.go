@@ -7,7 +7,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestNew(t *testing.T) {
+func TestNewInt(t *testing.T) {
 	s := NewInt()
 	empty := []int{}
 	got := s.Values()
@@ -16,7 +16,7 @@ func TestNew(t *testing.T) {
 	}
 }
 
-func TestNewFromArr(t *testing.T) {
+func TestNewIntFromArr(t *testing.T) {
 	tests := []struct {
 		input    []int
 		expected []int
@@ -45,7 +45,7 @@ func TestNewFromArr(t *testing.T) {
 	}
 }
 
-func TestAdd(t *testing.T) {
+func TestIntAdd(t *testing.T) {
 	s := NewIntFromArr([]int{1, 2, 3})
 	s.Add(5)
 	expected := []int{1, 2, 3, 5}
@@ -57,7 +57,7 @@ func TestAdd(t *testing.T) {
 	}
 }
 
-func TestSetDifference(t *testing.T) {
+func TestIntSetDifference(t *testing.T) {
 	tests := []struct {
 		a        []int
 		b        []int
