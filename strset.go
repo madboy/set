@@ -23,7 +23,7 @@ func (s *StrSet) Values() []string {
 }
 
 // NewFromStrArr returns a set filled with values in arr
-func NewFromStrArr(arr []string) StrSet {
+func NewStrFromArr(arr []string) StrSet {
 	s := NewStr()
 	for _, v := range arr {
 		s.Add(v)

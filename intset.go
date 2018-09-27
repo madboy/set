@@ -40,6 +40,29 @@ func (s *IntSet) Difference(o *IntSet) IntSet {
 	return n
 }
 
+// Union retuns a set of all values present in both s and o
+func (s *IntSet) Union(o *IntSet) IntSet {
+	v := make([]int, 0, s.Len()+o.Len())
+	for k := range *s {
+		v = append(v, k)
+	}
+	for k := range *o {
+		v = append(v, k)
+	}
+	return NewIntFromArr(v)
+}
+
+// Intersection returns a set with values that are both in s and o
+func (s *IntSet) Intersection(o *IntSet) IntSet {
+	n := NewInt()
+	for k := range *s {
+		if _, ok := (*o)[k]; ok {
+			n.Add(k)
+		}
+	}
+	return n
+}
+
 // Values returns an array of values in set
 func (s *IntSet) Values() []int {
 	v := make([]int, 0, s.Len())
