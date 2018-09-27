@@ -48,3 +48,26 @@ func (s *StrSet) Difference(o *StrSet) StrSet {
 	}
 	return n
 }
+
+// Union retuns a set of all values present in both s and o
+func (s *StrSet) Union(o *StrSet) StrSet {
+	v := make([]string, 0, s.Len()+o.Len())
+	for k := range *s {
+		v = append(v, k)
+	}
+	for k := range *o {
+		v = append(v, k)
+	}
+	return NewStrFromArr(v)
+}
+
+// Intersection returns a set with values that are both in s and o
+func (s *StrSet) Intersection(o *StrSet) StrSet {
+	n := NewStr()
+	for k := range *s {
+		if _, ok := (*o)[k]; ok {
+			n.Add(k)
+		}
+	}
+	return n
+}
