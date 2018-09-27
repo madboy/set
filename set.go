@@ -1,25 +1,19 @@
 package set
 
 // IntSet is an unordered collection of unique int elements
-type IntSet struct {
-	keys map[int]bool
-}
+type IntSet map[int]bool
 
 // StrSet is an unordered collection of unique string elements
-type StrSet struct {
-	keys map[string]bool
-}
+type StrSet map[string]bool
 
 // Len returns the length of the set
 func (s *IntSet) Len() int {
-	return len(s.keys)
+	return len(*s)
 }
 
 // NewInt returns an empty IntSet
 func NewInt() IntSet {
-	return IntSet{
-		keys: make(map[int]bool),
-	}
+	return make(map[int]bool)
 }
 
 // NewIntFromArr returns a set filled with values in arr
@@ -33,16 +27,16 @@ func NewIntFromArr(arr []int) IntSet {
 
 // Add value to the IntSet
 func (s *IntSet) Add(value int) {
-	if !s.keys[value] {
-		s.keys[value] = true
+	if !(*s)[value] {
+		(*s)[value] = true
 	}
 }
 
 // Difference returns all values in s that aren't in o
 func (s *IntSet) Difference(o *IntSet) IntSet {
 	n := NewInt()
-	for k := range s.keys {
-		if _, ok := o.keys[k]; !ok {
+	for k := range *s {
+		if _, ok := (*o)[k]; !ok {
 			n.Add(k)
 		}
 	}
@@ -51,8 +45,8 @@ func (s *IntSet) Difference(o *IntSet) IntSet {
 
 // Values returns an array of values in set
 func (s *IntSet) Values() []int {
-	v := make([]int, 0, len(s.keys))
-	for k := range s.keys {
+	v := make([]int, 0, s.Len())
+	for k := range *s {
 		v = append(v, k)
 	}
 	return v
@@ -60,20 +54,18 @@ func (s *IntSet) Values() []int {
 
 // Len returns the length of the set
 func (s *StrSet) Len() int {
-	return len(s.keys)
+	return len(*s)
 }
 
 // NewStr returns an empty StrSet
 func NewStr() StrSet {
-	return StrSet{
-		keys: make(map[string]bool),
-	}
+	return make(map[string]bool)
 }
 
 // Values returns an array of values in set
 func (s *StrSet) Values() []string {
-	v := make([]string, 0, len(s.keys))
-	for k := range s.keys {
+	v := make([]string, 0, s.Len())
+	for k := range *s {
 		v = append(v, k)
 	}
 	return v
@@ -90,16 +82,16 @@ func NewFromStrArr(arr []string) StrSet {
 
 // Add value to the StrSet
 func (s *StrSet) Add(value string) {
-	if !s.keys[value] {
-		s.keys[value] = true
+	if !(*s)[value] {
+		(*s)[value] = true
 	}
 }
 
 // Difference returns all values in s that aren't in o
 func (s *StrSet) Difference(o *StrSet) StrSet {
 	n := NewStr()
-	for k := range s.keys {
-		if _, ok := o.keys[k]; !ok {
+	for k := range *s {
+		if _, ok := (*o)[k]; !ok {
 			n.Add(k)
 		}
 	}
