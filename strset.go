@@ -71,3 +71,11 @@ func (s *StrSet) Intersection(o *StrSet) StrSet {
 	}
 	return n
 }
+
+// SymmetricDifference returns a set with values that are in s and o but not both
+func (s *StrSet) SymmetricDifference(o *StrSet) StrSet {
+	i := s.Intersection(o)
+	d1 := s.Difference(&i)
+	d2 := o.Difference(&i)
+	return d1.Union(&d2)
+}

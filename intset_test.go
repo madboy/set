@@ -171,3 +171,51 @@ func TestIntSetIntersection(t *testing.T) {
 		}
 	}
 }
+
+func TestIntSetSymmetricDifference(t *testing.T) {
+	tests := []struct {
+		a        IntSet
+		b        IntSet
+		expected []int
+	}{
+		{
+			a:        NewIntFromArr([]int{1, 2, 3}),
+			b:        NewIntFromArr([]int{4, 5, 6}),
+			expected: []int{1, 2, 3, 4, 5, 6},
+		},
+		{
+			a:        NewIntFromArr([]int{1, 2, 3}),
+			b:        NewIntFromArr([]int{1, 2, 3, 4, 5, 6}),
+			expected: []int{4, 5, 6},
+		},
+		{
+			a:        NewIntFromArr([]int{1, 2, 3, 4, 5, 6}),
+			b:        NewIntFromArr([]int{1, 2, 3}),
+			expected: []int{4, 5, 6},
+		},
+		{
+			a:        NewIntFromArr([]int{1}),
+			b:        NewIntFromArr([]int{}),
+			expected: []int{1},
+		},
+		{
+			a:        NewIntFromArr([]int{}),
+			b:        NewIntFromArr([]int{}),
+			expected: []int{},
+		},
+		{
+			a:        NewIntFromArr([]int{1, 2, 3, 4}),
+			b:        NewIntFromArr([]int{4, 5, 6, 7}),
+			expected: []int{1, 2, 3, 5, 6, 7},
+		},
+	}
+
+	for _, tt := range tests {
+		union := tt.a.SymmetricDifference(&tt.b)
+		got := union.Values()
+		sort.Ints(got)
+		if !cmp.Equal(got, tt.expected) {
+			t.Errorf("Values are not the same %v, got %v", tt.expected, got)
+		}
+	}
+}

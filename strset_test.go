@@ -170,3 +170,51 @@ func TestStrSetIntersection(t *testing.T) {
 		}
 	}
 }
+
+func TestStrSetSymmetricDifference(t *testing.T) {
+	tests := []struct {
+		a        StrSet
+		b        StrSet
+		expected []string
+	}{
+		{
+			a:        NewStrFromArr([]string{"a", "b", "c"}),
+			b:        NewStrFromArr([]string{"d", "e", "f"}),
+			expected: []string{"a", "b", "c", "d", "e", "f"},
+		},
+		{
+			a:        NewStrFromArr([]string{"a", "b", "c"}),
+			b:        NewStrFromArr([]string{"a", "b", "c", "d", "e", "f"}),
+			expected: []string{"d", "e", "f"},
+		},
+		{
+			a:        NewStrFromArr([]string{"a", "b", "c", "d", "e", "f"}),
+			b:        NewStrFromArr([]string{"a", "b", "c"}),
+			expected: []string{"d", "e", "f"},
+		},
+		{
+			a:        NewStrFromArr([]string{"a"}),
+			b:        NewStrFromArr([]string{}),
+			expected: []string{"a"},
+		},
+		{
+			a:        NewStrFromArr([]string{}),
+			b:        NewStrFromArr([]string{}),
+			expected: []string{},
+		},
+		{
+			a:        NewStrFromArr([]string{"a", "b", "c", "d"}),
+			b:        NewStrFromArr([]string{"d", "e", "f", "g"}),
+			expected: []string{"a", "b", "c", "e", "f", "g"},
+		},
+	}
+
+	for _, tt := range tests {
+		union := tt.a.SymmetricDifference(&tt.b)
+		got := union.Values()
+		sort.Strings(got)
+		if !cmp.Equal(got, tt.expected) {
+			t.Errorf("Values are not the same %v, got %v", tt.expected, got)
+		}
+	}
+}

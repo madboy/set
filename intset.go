@@ -63,6 +63,14 @@ func (s *IntSet) Intersection(o *IntSet) IntSet {
 	return n
 }
 
+// SymmetricDifference returns a set with values that are in s and o but not both
+func (s *IntSet) SymmetricDifference(o *IntSet) IntSet {
+	i := s.Intersection(o)
+	d1 := s.Difference(&i)
+	d2 := o.Difference(&i)
+	return d1.Union(&d2)
+}
+
 // Values returns an array of values in set
 func (s *IntSet) Values() []int {
 	v := make([]int, 0, s.Len())
