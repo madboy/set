@@ -219,3 +219,47 @@ func TestIntSetSymmetricDifference(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkAdd(b *testing.B) {
+	s := NewInt()
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		s.Add(i)
+	}
+}
+
+func BenchmarkDifference(b *testing.B) {
+	s1 := NewIntFromArr([]int{1, 2, 3, 4, 5, 6, 7, 8, 9})
+	s2 := NewIntFromArr([]int{8, 9, 10, 11, 12, 13, 14, 15, 16})
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		s1.Difference(&s2)
+	}
+}
+
+func BenchmarkUnion(b *testing.B) {
+	s1 := NewIntFromArr([]int{1, 2, 3, 4, 5, 6, 7, 8, 9})
+	s2 := NewIntFromArr([]int{8, 9, 10, 11, 12, 13, 14, 15, 16})
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		s1.Union(&s2)
+	}
+}
+
+func BenchmarkIntersection(b *testing.B) {
+	s1 := NewIntFromArr([]int{1, 2, 3, 4, 5, 6, 7, 8, 9})
+	s2 := NewIntFromArr([]int{8, 9, 10, 11, 12, 13, 14, 15, 16})
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		s1.Intersection(&s2)
+	}
+}
+
+func BenchmarkSymmetricDifference(b *testing.B) {
+	s1 := NewIntFromArr([]int{1, 2, 3, 4, 5, 6, 7, 8, 9})
+	s2 := NewIntFromArr([]int{8, 9, 10, 11, 12, 13, 14, 15, 16})
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		s1.SymmetricDifference(&s2)
+	}
+}
