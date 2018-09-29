@@ -80,16 +80,16 @@ func (s *IntSet) Difference(o *IntSet) IntSet {
 	return n
 }
 
-// Union retuns a set of all elements present in both s and o
+// Union returns a set of all elements present in both s and o
 func (s *IntSet) Union(o *IntSet) IntSet {
-	els := make([]int, 0, s.Len()+o.Len())
+	us := NewInt()
 	for el := range s.els {
-		els = append(els, el)
+		us.Add(el)
 	}
 	for el := range o.els {
-		els = append(els, el)
+		us.Add(el)
 	}
-	return NewIntFromArr(els)
+	return us
 }
 
 // Intersection returns a set with elements that are both in s and o
