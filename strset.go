@@ -1,7 +1,25 @@
 package set
 
+import (
+	"bytes"
+	"fmt"
+)
+
 // StrSet is an unordered collection of unique string elements
 type StrSet map[string]bool
+
+func (s *StrSet) String() string {
+	var buf bytes.Buffer
+	buf.WriteByte('{')
+	for k := range *s {
+		if buf.Len() > len("{") {
+			buf.WriteByte(' ')
+		}
+		fmt.Fprintf(&buf, "\"%s\"", k)
+	}
+	buf.WriteByte('}')
+	return buf.String()
+}
 
 // Len returns the length of the set
 func (s *StrSet) Len() int {
@@ -22,12 +40,10 @@ func (s *StrSet) Values() []string {
 	return v
 }
 
-// NewFromStrArr returns a set filled with values in arr
+// NewStrFromArr returns a set filled with values in arr
 func NewStrFromArr(arr []string) StrSet {
 	s := NewStr()
-	for _, v := range arr {
-		s.Add(v)
-	}
+	s.AddAll(arr...)
 	return s
 }
 
@@ -35,6 +51,13 @@ func NewStrFromArr(arr []string) StrSet {
 func (s *StrSet) Add(value string) {
 	if !(*s)[value] {
 		(*s)[value] = true
+	}
+}
+
+// AddAll adds all values to the set
+func (s *StrSet) AddAll(values ...string) {
+	for _, v := range values {
+		s.Add(v)
 	}
 }
 

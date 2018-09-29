@@ -44,15 +44,67 @@ func TestNewIntFromArr(t *testing.T) {
 	}
 }
 
-func TestIntAdd(t *testing.T) {
-	s := NewIntFromArr([]int{1, 2, 3})
-	s.Add(5)
-	expected := []int{1, 2, 3, 5}
+func TestIntAddAll(t *testing.T) {
+	tests := []struct {
+		s        IntSet
+		input    []int
+		expected []int
+	}{
+		{
+			s:        NewInt(),
+			input:    []int{1, 2, 3, 4, 5, 7, 8, 9, 10, 11},
+			expected: []int{1, 2, 3, 4, 5, 7, 8, 9, 10, 11},
+		},
+		{
+			s:        NewInt(),
+			input:    []int{1, 1, 1, 2, 3, 3},
+			expected: []int{1, 2, 3},
+		},
+		{
+			s:        NewIntFromArr([]int{1, 2, 4}),
+			input:    []int{1, 1, 1, 2, 3, 3},
+			expected: []int{1, 2, 3, 4},
+		},
+	}
+	for _, tt := range tests {
+		tt.s.AddAll(tt.input...)
+		got := tt.s.Values()
+		sort.Ints(got)
+		if !cmp.Equal(got, tt.expected) {
+			t.Errorf("Expected: %v, Got: %v", tt.expected, got)
+		}
 
-	got := s.Values()
-	sort.Ints(got)
-	if !cmp.Equal(got, expected) {
-		t.Errorf("Expected: %v, Got: %v", expected, got)
+		if tt.s.Len() != len(tt.expected) {
+			t.Errorf("Unexpectd number of elements, expected, %d, got %d", len(tt.expected), tt.s.Len())
+		}
+	}
+}
+
+func TestIntAdd(t *testing.T) {
+	tests := []struct {
+		s        IntSet
+		input    int
+		expected []int
+	}{
+		{
+			s:        NewIntFromArr([]int{1, 2, 3}),
+			input:    5,
+			expected: []int{1, 2, 3, 5},
+		},
+		{
+			s:        NewInt(),
+			input:    5,
+			expected: []int{5},
+		},
+	}
+
+	for _, tc := range tests {
+		tc.s.Add(tc.input)
+		got := tc.s.Values()
+		sort.Ints(got)
+		if !cmp.Equal(got, tc.expected) {
+			t.Errorf("Expected: %v, Got: %v", tc.expected, got)
+		}
 	}
 }
 

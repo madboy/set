@@ -16,7 +16,7 @@ func TestNewStrSet(t *testing.T) {
 	}
 }
 
-func TestNewStrSetFromArr(t *testing.T) {
+func TestNewStrFromArr(t *testing.T) {
 	tests := []struct {
 		input    StrSet
 		expected []string
@@ -44,15 +44,67 @@ func TestNewStrSetFromArr(t *testing.T) {
 	}
 }
 
-func TestStrAdd(t *testing.T) {
-	s := NewStrFromArr([]string{"art", "paint", "sky"})
-	s.Add("turner")
-	expected := []string{"art", "paint", "sky", "turner"}
+func TestStrAddAll(t *testing.T) {
+	tests := []struct {
+		s        StrSet
+		input    []string
+		expected []string
+	}{
+		{
+			s:        NewStr(),
+			input:    []string{"a", "b", "c", "d", "al", "bal"},
+			expected: []string{"a", "al", "b", "bal", "c", "d"},
+		},
+		{
+			s:        NewStr(),
+			input:    []string{"a", "a", "a", "b", "ce", "ce"},
+			expected: []string{"a", "b", "ce"},
+		},
+		{
+			s:        NewStrFromArr([]string{"a", "b"}),
+			input:    []string{"a", "a", "a", "b", "ce", "ce"},
+			expected: []string{"a", "b", "ce"},
+		},
+	}
+	for _, tt := range tests {
+		tt.s.AddAll(tt.input...)
+		got := tt.s.Values()
+		sort.Strings(got)
+		if !cmp.Equal(got, tt.expected) {
+			t.Errorf("Expected: %v, Got: %v", tt.expected, got)
+		}
 
-	got := s.Values()
-	sort.Strings(got)
-	if !cmp.Equal(got, expected) {
-		t.Errorf("Expected: %v, Got: %v", expected, got)
+		if tt.s.Len() != len(tt.expected) {
+			t.Errorf("Unexpectd number of elements, expected, %d, got %d", len(tt.expected), tt.s.Len())
+		}
+	}
+}
+
+func TestStrAdd(t *testing.T) {
+	tests := []struct {
+		s        StrSet
+		input    string
+		expected []string
+	}{
+		{
+			s:        NewStrFromArr([]string{"art", "paint", "sky"}),
+			input:    "turner",
+			expected: []string{"art", "paint", "sky", "turner"},
+		},
+		{
+			s:        NewStr(),
+			input:    "turner",
+			expected: []string{"turner"},
+		},
+	}
+
+	for _, tc := range tests {
+		tc.s.Add(tc.input)
+		got := tc.s.Values()
+		sort.Strings(got)
+		if !cmp.Equal(got, tc.expected) {
+			t.Errorf("Expected: %v, Got: %v", tc.expected, got)
+		}
 	}
 }
 

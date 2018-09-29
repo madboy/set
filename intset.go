@@ -1,7 +1,25 @@
 package set
 
+import (
+	"bytes"
+	"fmt"
+)
+
 // IntSet is an unordered collection of unique int elements
 type IntSet map[int]bool
+
+func (s *IntSet) String() string {
+	var buf bytes.Buffer
+	buf.WriteByte('{')
+	for k := range *s {
+		if buf.Len() > len("{") {
+			buf.WriteByte(' ')
+		}
+		fmt.Fprintf(&buf, "%d", k)
+	}
+	buf.WriteByte('}')
+	return buf.String()
+}
 
 // Len returns the length of the set
 func (s *IntSet) Len() int {
@@ -16,9 +34,7 @@ func NewInt() IntSet {
 // NewIntFromArr returns a set filled with values in arr
 func NewIntFromArr(arr []int) IntSet {
 	s := NewInt()
-	for _, v := range arr {
-		s.Add(v)
-	}
+	s.AddAll(arr...)
 	return s
 }
 
@@ -26,6 +42,13 @@ func NewIntFromArr(arr []int) IntSet {
 func (s *IntSet) Add(value int) {
 	if !(*s)[value] {
 		(*s)[value] = true
+	}
+}
+
+// AddAll adds all values to the set
+func (s *IntSet) AddAll(values ...int) {
+	for _, v := range values {
+		s.Add(v)
 	}
 }
 
