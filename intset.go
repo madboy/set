@@ -52,6 +52,18 @@ func (s *IntSet) AddAll(values ...int) {
 	}
 }
 
+// Remove value from set
+func (s *IntSet) Remove(value int) {
+	delete(*s, value)
+}
+
+// RemoveAll values from set
+func (s *IntSet) RemoveAll(values ...int) {
+	for _, v := range values {
+		s.Remove(v)
+	}
+}
+
 // Difference returns all values in s that aren't in o
 func (s *IntSet) Difference(o *IntSet) IntSet {
 	n := NewInt()

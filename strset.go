@@ -61,6 +61,18 @@ func (s *StrSet) AddAll(values ...string) {
 	}
 }
 
+// Remove value from set
+func (s *StrSet) Remove(value string) {
+	delete(*s, value)
+}
+
+// RemoveAll values from set
+func (s *StrSet) RemoveAll(values ...string) {
+	for _, v := range values {
+		s.Remove(v)
+	}
+}
+
 // Difference returns all values in s that aren't in o
 func (s *StrSet) Difference(o *StrSet) StrSet {
 	n := NewStr()

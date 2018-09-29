@@ -1,17 +1,17 @@
 package set
 
 import (
+	"fmt"
 	"sort"
+	"strings"
 	"testing"
-
-	"github.com/google/go-cmp/cmp"
 )
 
 func TestNewInt(t *testing.T) {
 	s := NewInt()
 	empty := []int{}
 	got := s.Values()
-	if !cmp.Equal(got, empty) {
+	if !equalInt(got, empty) {
 		t.Errorf("Expected: %v, Got: %v", empty, got)
 	}
 }
@@ -32,9 +32,7 @@ func TestNewIntFromArr(t *testing.T) {
 	}
 	for _, tt := range tests {
 		got := tt.input.Values()
-		// To be able to compare we need to sort values as compare takes order into account
-		sort.Ints(got)
-		if !cmp.Equal(got, tt.expected) {
+		if !equalInt(got, tt.expected) {
 			t.Errorf("Expected: %v, Got: %v", tt.expected, got)
 		}
 
@@ -44,6 +42,33 @@ func TestNewIntFromArr(t *testing.T) {
 	}
 }
 
+func TestIntString(t *testing.T) {
+	tests := []struct {
+		s        IntSet
+		expected int
+	}{
+		{
+			s:        NewIntFromArr([]int{1, 2, 3}),
+			expected: 3,
+		},
+		{
+			s:        NewInt(),
+			expected: 1,
+		},
+	}
+
+	for _, tc := range tests {
+		got := fmt.Sprintf("%s", &tc.s)
+		if got[0] != '{' && got[len(got)-1] != '}' {
+			t.Errorf("Expected string to start with { and end with }, got %s", got)
+		}
+
+		parts := strings.Split(got, " ")
+		if len(parts) != tc.expected {
+			t.Errorf("Wrong number of elements in output, expected %d, got %d (%s)", tc.expected, len(parts), got)
+		}
+	}
+}
 func TestIntAddAll(t *testing.T) {
 	tests := []struct {
 		s        IntSet
@@ -69,13 +94,12 @@ func TestIntAddAll(t *testing.T) {
 	for _, tt := range tests {
 		tt.s.AddAll(tt.input...)
 		got := tt.s.Values()
-		sort.Ints(got)
-		if !cmp.Equal(got, tt.expected) {
+		if !equalInt(got, tt.expected) {
 			t.Errorf("Expected: %v, Got: %v", tt.expected, got)
 		}
 
 		if tt.s.Len() != len(tt.expected) {
-			t.Errorf("Unexpectd number of elements, expected, %d, got %d", len(tt.expected), tt.s.Len())
+			t.Errorf("Unexpectd number of elements, expected %d, got %d", len(tt.expected), tt.s.Len())
 		}
 	}
 }
@@ -101,8 +125,66 @@ func TestIntAdd(t *testing.T) {
 	for _, tc := range tests {
 		tc.s.Add(tc.input)
 		got := tc.s.Values()
-		sort.Ints(got)
-		if !cmp.Equal(got, tc.expected) {
+		if !equalInt(got, tc.expected) {
+			t.Errorf("Expected: %v, Got: %v", tc.expected, got)
+		}
+	}
+}
+
+func TestIntRemove(t *testing.T) {
+	tests := []struct {
+		s        IntSet
+		input    int
+		expected []int
+	}{
+		{
+			s:        NewIntFromArr([]int{1, 2, 3}),
+			input:    3,
+			expected: []int{1, 2},
+		},
+		{
+			s:        NewInt(),
+			input:    5,
+			expected: []int{},
+		},
+	}
+
+	for _, tc := range tests {
+		tc.s.Remove(tc.input)
+		got := tc.s.Values()
+		if !equalInt(got, tc.expected) {
+			t.Errorf("Expected: %v, Got: %v", tc.expected, got)
+		}
+	}
+}
+
+func TestIntRemoveAll(t *testing.T) {
+	tests := []struct {
+		s        IntSet
+		input    []int
+		expected []int
+	}{
+		{
+			s:        NewIntFromArr([]int{1, 2, 3, 5, 6}),
+			input:    []int{3, 1, 72},
+			expected: []int{2, 5, 6},
+		},
+		{
+			s:        NewIntFromArr([]int{1, 2, 3}),
+			input:    []int{5},
+			expected: []int{1, 2, 3},
+		},
+		{
+			s:        NewIntFromArr([]int{1, 2, 3}),
+			input:    []int{1, 2, 3},
+			expected: []int{},
+		},
+	}
+
+	for _, tc := range tests {
+		tc.s.RemoveAll(tc.input...)
+		got := tc.s.Values()
+		if !equalInt(got, tc.expected) {
 			t.Errorf("Expected: %v, Got: %v", tc.expected, got)
 		}
 	}
@@ -135,8 +217,7 @@ func TestIntSetDifference(t *testing.T) {
 		diff := tt.b.Difference(&tt.a)
 
 		got := diff.Values()
-		sort.Ints(got)
-		if !cmp.Equal(got, tt.expected) {
+		if !equalInt(got, tt.expected) {
 			t.Errorf("Values are not the same. Expected %v got %v", tt.expected, got)
 		}
 	}
@@ -174,8 +255,7 @@ func TestIntSetUnion(t *testing.T) {
 	for _, tt := range tests {
 		union := tt.a.Union(&tt.b)
 		got := union.Values()
-		sort.Ints(got)
-		if !cmp.Equal(got, tt.expected) {
+		if !equalInt(got, tt.expected) {
 			t.Errorf("Values are not the same %v, got %v", tt.expected, got)
 		}
 	}
@@ -217,8 +297,7 @@ func TestIntSetIntersection(t *testing.T) {
 	for _, tt := range tests {
 		union := tt.a.Intersection(&tt.b)
 		got := union.Values()
-		sort.Ints(got)
-		if !cmp.Equal(got, tt.expected) {
+		if !equalInt(got, tt.expected) {
 			t.Errorf("Values are not the same %v, got %v", tt.expected, got)
 		}
 	}
@@ -265,8 +344,7 @@ func TestIntSetSymmetricDifference(t *testing.T) {
 	for _, tt := range tests {
 		union := tt.a.SymmetricDifference(&tt.b)
 		got := union.Values()
-		sort.Ints(got)
-		if !cmp.Equal(got, tt.expected) {
+		if !equalInt(got, tt.expected) {
 			t.Errorf("Values are not the same %v, got %v", tt.expected, got)
 		}
 	}
@@ -314,4 +392,20 @@ func BenchmarkSymmetricDifference(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		s1.SymmetricDifference(&s2)
 	}
+}
+
+// equalInt compares equality of two sorted arrays
+func equalInt(x, y []int) bool {
+	if len(x) != len(y) {
+		return false
+	}
+	sort.Ints(x)
+	sort.Ints(y)
+
+	for i := range x {
+		if x[i] != y[i] {
+			return false
+		}
+	}
+	return true
 }
