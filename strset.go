@@ -6,12 +6,14 @@ import (
 )
 
 // StrSet is an unordered collection of unique string elements
-type StrSet map[string]bool
+type StrSet struct {
+	els map[string]bool
+}
 
 func (s *StrSet) String() string {
 	var buf bytes.Buffer
 	buf.WriteByte('{')
-	for k := range *s {
+	for k := range s.els {
 		if buf.Len() > len("{") {
 			buf.WriteByte(' ')
 		}
@@ -23,94 +25,96 @@ func (s *StrSet) String() string {
 
 // Len returns the length of the set
 func (s *StrSet) Len() int {
-	return len(*s)
+	return len(s.els)
 }
 
 // NewStr returns an empty StrSet
 func NewStr() StrSet {
-	return make(map[string]bool)
+	s := StrSet{
+		els: make(map[string]bool),
+	}
+	return s
 }
 
-// Values returns an array of values in set
-func (s *StrSet) Values() []string {
+// Elements returns an array of elements in set
+func (s *StrSet) Elements() []string {
 	v := make([]string, 0, s.Len())
-	for k := range *s {
+	for k := range s.els {
 		v = append(v, k)
 	}
 	return v
 }
 
-// NewStrFromArr returns a set filled with values in arr
+// NewStrFromArr returns a set filled with elements in arr
 func NewStrFromArr(arr []string) StrSet {
 	s := NewStr()
 	s.AddAll(arr...)
 	return s
 }
 
-// Add value to the StrSet
-func (s *StrSet) Add(value string) {
-	if !(*s)[value] {
-		(*s)[value] = true
+// Add element to the StrSet
+func (s *StrSet) Add(element string) {
+	if !s.els[element] {
+		s.els[element] = true
 	}
 }
 
-// AddAll adds all values to the set
-func (s *StrSet) AddAll(values ...string) {
-	for _, v := range values {
-		s.Add(v)
+// AddAll adds all elements to the set
+func (s *StrSet) AddAll(elements ...string) {
+	for _, el := range elements {
+		s.Add(el)
 	}
 }
 
-// Remove value from set
-func (s *StrSet) Remove(value string) {
-	delete(*s, value)
+// Remove element from set
+func (s *StrSet) Remove(element string) {
+	delete(s.els, element)
 }
 
-// RemoveAll values from set
-func (s *StrSet) RemoveAll(values ...string) {
-	for _, v := range values {
-		s.Remove(v)
+// RemoveAll elements from set
+func (s *StrSet) RemoveAll(elements ...string) {
+	for _, el := range elements {
+		s.Remove(el)
 	}
 }
 
-// Difference returns all values in s that aren't in o
+// Difference returns all elements in s that aren't in o
 func (s *StrSet) Difference(o *StrSet) StrSet {
 	n := NewStr()
-	for k := range *s {
-		if _, ok := (*o)[k]; !ok {
-			n.Add(k)
+	for el := range s.els {
+		if _, ok := o.els[el]; !ok {
+			n.Add(el)
 		}
 	}
 	return n
 }
 
-// Union retuns a set of all values present in both s and o
+// Union retuns a set of all elements present in both s and o
 func (s *StrSet) Union(o *StrSet) StrSet {
-	v := make([]string, 0, s.Len()+o.Len())
-	for k := range *s {
-		v = append(v, k)
+	els := make([]string, 0, s.Len()+o.Len())
+	for el := range s.els {
+		els = append(els, el)
 	}
-	for k := range *o {
-		v = append(v, k)
+	for el := range o.els {
+		els = append(els, el)
 	}
-	return NewStrFromArr(v)
+	return NewStrFromArr(els)
 }
 
-// Intersection returns a set with values that are both in s and o
+// Intersection returns a set with elements that are both in s and o
 func (s *StrSet) Intersection(o *StrSet) StrSet {
 	n := NewStr()
-	for k := range *s {
-		if _, ok := (*o)[k]; ok {
-			n.Add(k)
+	for el := range s.els {
+		if _, ok := o.els[el]; ok {
+			n.Add(el)
 		}
 	}
 	return n
 }
 
-// SymmetricDifference returns a set with values that are in s and o but not both
+// SymmetricDifference returns a set with elements that are in s and o but not both
 func (s *StrSet) SymmetricDifference(o *StrSet) StrSet {
-	i := s.Intersection(o)
-	d1 := s.Difference(&i)
-	d2 := o.Difference(&i)
+	d1 := s.Difference(o)
+	d2 := o.Difference(s)
 	return d1.Union(&d2)
 }

@@ -6,16 +6,18 @@ import (
 )
 
 // IntSet is an unordered collection of unique int elements
-type IntSet map[int]bool
+type IntSet struct {
+	els map[int]bool
+}
 
 func (s *IntSet) String() string {
 	var buf bytes.Buffer
 	buf.WriteByte('{')
-	for k := range *s {
+	for el := range s.els {
 		if buf.Len() > len("{") {
 			buf.WriteByte(' ')
 		}
-		fmt.Fprintf(&buf, "%d", k)
+		fmt.Fprintf(&buf, "%d", el)
 	}
 	buf.WriteByte('}')
 	return buf.String()
@@ -23,94 +25,96 @@ func (s *IntSet) String() string {
 
 // Len returns the length of the set
 func (s *IntSet) Len() int {
-	return len(*s)
+	return len(s.els)
 }
 
 // NewInt returns an empty IntSet
 func NewInt() IntSet {
-	return make(map[int]bool)
+	s := IntSet{
+		els: make(map[int]bool),
+	}
+	return s
 }
 
-// NewIntFromArr returns a set filled with values in arr
+// NewIntFromArr returns a set filled with elements in arr
 func NewIntFromArr(arr []int) IntSet {
 	s := NewInt()
 	s.AddAll(arr...)
 	return s
 }
 
-// Add value to the IntSet
-func (s *IntSet) Add(value int) {
-	if !(*s)[value] {
-		(*s)[value] = true
+// Add element to the IntSet
+func (s *IntSet) Add(element int) {
+	if !s.els[element] {
+		s.els[element] = true
 	}
 }
 
-// AddAll adds all values to the set
-func (s *IntSet) AddAll(values ...int) {
-	for _, v := range values {
-		s.Add(v)
+// AddAll adds all elements to the set
+func (s *IntSet) AddAll(elements ...int) {
+	for _, el := range elements {
+		s.Add(el)
 	}
 }
 
-// Remove value from set
-func (s *IntSet) Remove(value int) {
-	delete(*s, value)
+// Remove element from set
+func (s *IntSet) Remove(element int) {
+	delete(s.els, element)
 }
 
-// RemoveAll values from set
-func (s *IntSet) RemoveAll(values ...int) {
-	for _, v := range values {
+// RemoveAll elements from set
+func (s *IntSet) RemoveAll(elements ...int) {
+	for _, v := range elements {
 		s.Remove(v)
 	}
 }
 
-// Difference returns all values in s that aren't in o
+// Difference returns all elements in s that aren't in o
 func (s *IntSet) Difference(o *IntSet) IntSet {
 	n := NewInt()
-	for k := range *s {
-		if _, ok := (*o)[k]; !ok {
-			n.Add(k)
+	for el := range s.els {
+		if _, ok := o.els[el]; !ok {
+			n.Add(el)
 		}
 	}
 	return n
 }
 
-// Union retuns a set of all values present in both s and o
+// Union retuns a set of all elements present in both s and o
 func (s *IntSet) Union(o *IntSet) IntSet {
-	v := make([]int, 0, s.Len()+o.Len())
-	for k := range *s {
-		v = append(v, k)
+	els := make([]int, 0, s.Len()+o.Len())
+	for el := range s.els {
+		els = append(els, el)
 	}
-	for k := range *o {
-		v = append(v, k)
+	for el := range o.els {
+		els = append(els, el)
 	}
-	return NewIntFromArr(v)
+	return NewIntFromArr(els)
 }
 
-// Intersection returns a set with values that are both in s and o
+// Intersection returns a set with elements that are both in s and o
 func (s *IntSet) Intersection(o *IntSet) IntSet {
 	n := NewInt()
-	for k := range *s {
-		if _, ok := (*o)[k]; ok {
-			n.Add(k)
+	for el := range s.els {
+		if _, ok := o.els[el]; ok {
+			n.Add(el)
 		}
 	}
 	return n
 }
 
-// SymmetricDifference returns a set with values that are in s and o but not both
+// SymmetricDifference returns a set with elements that are in s and o but not both
 func (s *IntSet) SymmetricDifference(o *IntSet) IntSet {
-	i := s.Intersection(o)
-	d1 := s.Difference(&i)
-	d2 := o.Difference(&i)
+	d1 := s.Difference(o)
+	d2 := o.Difference(s)
 	return d1.Union(&d2)
 }
 
-// Values returns an array of values in set
-func (s *IntSet) Values() []int {
-	v := make([]int, 0, s.Len())
-	for k := range *s {
-		v = append(v, k)
+// Elements returns an array of elements in set
+func (s *IntSet) Elements() []int {
+	els := make([]int, 0, s.Len())
+	for el := range s.els {
+		els = append(els, el)
 	}
-	return v
+	return els
 }

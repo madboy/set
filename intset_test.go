@@ -10,7 +10,7 @@ import (
 func TestNewInt(t *testing.T) {
 	s := NewInt()
 	empty := []int{}
-	got := s.Values()
+	got := s.Elements()
 	if !equalInt(got, empty) {
 		t.Errorf("Expected: %v, Got: %v", empty, got)
 	}
@@ -31,7 +31,7 @@ func TestNewIntFromArr(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		got := tt.input.Values()
+		got := tt.input.Elements()
 		if !equalInt(got, tt.expected) {
 			t.Errorf("Expected: %v, Got: %v", tt.expected, got)
 		}
@@ -93,7 +93,7 @@ func TestIntAddAll(t *testing.T) {
 	}
 	for _, tt := range tests {
 		tt.s.AddAll(tt.input...)
-		got := tt.s.Values()
+		got := tt.s.Elements()
 		if !equalInt(got, tt.expected) {
 			t.Errorf("Expected: %v, Got: %v", tt.expected, got)
 		}
@@ -124,7 +124,7 @@ func TestIntAdd(t *testing.T) {
 
 	for _, tc := range tests {
 		tc.s.Add(tc.input)
-		got := tc.s.Values()
+		got := tc.s.Elements()
 		if !equalInt(got, tc.expected) {
 			t.Errorf("Expected: %v, Got: %v", tc.expected, got)
 		}
@@ -151,7 +151,7 @@ func TestIntRemove(t *testing.T) {
 
 	for _, tc := range tests {
 		tc.s.Remove(tc.input)
-		got := tc.s.Values()
+		got := tc.s.Elements()
 		if !equalInt(got, tc.expected) {
 			t.Errorf("Expected: %v, Got: %v", tc.expected, got)
 		}
@@ -183,7 +183,7 @@ func TestIntRemoveAll(t *testing.T) {
 
 	for _, tc := range tests {
 		tc.s.RemoveAll(tc.input...)
-		got := tc.s.Values()
+		got := tc.s.Elements()
 		if !equalInt(got, tc.expected) {
 			t.Errorf("Expected: %v, Got: %v", tc.expected, got)
 		}
@@ -216,9 +216,9 @@ func TestIntSetDifference(t *testing.T) {
 	for _, tt := range tests {
 		diff := tt.b.Difference(&tt.a)
 
-		got := diff.Values()
+		got := diff.Elements()
 		if !equalInt(got, tt.expected) {
-			t.Errorf("Values are not the same. Expected %v got %v", tt.expected, got)
+			t.Errorf("Elements are not the same. Expected %v got %v", tt.expected, got)
 		}
 	}
 
@@ -254,9 +254,9 @@ func TestIntSetUnion(t *testing.T) {
 
 	for _, tt := range tests {
 		union := tt.a.Union(&tt.b)
-		got := union.Values()
+		got := union.Elements()
 		if !equalInt(got, tt.expected) {
-			t.Errorf("Values are not the same %v, got %v", tt.expected, got)
+			t.Errorf("Elements are not the same %v, got %v", tt.expected, got)
 		}
 	}
 }
@@ -296,9 +296,9 @@ func TestIntSetIntersection(t *testing.T) {
 
 	for _, tt := range tests {
 		union := tt.a.Intersection(&tt.b)
-		got := union.Values()
+		got := union.Elements()
 		if !equalInt(got, tt.expected) {
-			t.Errorf("Values are not the same %v, got %v", tt.expected, got)
+			t.Errorf("Elements are not the same %v, got %v", tt.expected, got)
 		}
 	}
 }
@@ -343,9 +343,9 @@ func TestIntSetSymmetricDifference(t *testing.T) {
 
 	for _, tt := range tests {
 		union := tt.a.SymmetricDifference(&tt.b)
-		got := union.Values()
+		got := union.Elements()
 		if !equalInt(got, tt.expected) {
-			t.Errorf("Values are not the same %v, got %v", tt.expected, got)
+			t.Errorf("Elements are not the same %v, got %v", tt.expected, got)
 		}
 	}
 }
