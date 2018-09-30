@@ -190,6 +190,33 @@ func TestIntRemoveAll(t *testing.T) {
 	}
 }
 
+func TestIntContains(t *testing.T) {
+	tests := []struct {
+		s        IntSet
+		input    []int
+		expected []bool
+	}{
+		{
+			s:        NewIntFromArr([]int{1, 2, 3}),
+			input:    []int{1, 2, 3, 4},
+			expected: []bool{true, true, true, false},
+		},
+		{
+			s:        NewInt(),
+			input:    []int{5},
+			expected: []bool{false},
+		},
+	}
+
+	for _, tc := range tests {
+		for i, el := range tc.input {
+			if tc.s.Contains(el) != tc.expected[i] {
+				t.Errorf("Expected: %v for %d, Got: %v", tc.expected[i], el, tc.s.Contains(el))
+			}
+		}
+	}
+}
+
 func TestIntSetDifference(t *testing.T) {
 	tests := []struct {
 		a        IntSet

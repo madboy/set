@@ -190,6 +190,34 @@ func TestStrRemoveAll(t *testing.T) {
 		}
 	}
 }
+
+func TestStrContains(t *testing.T) {
+	tests := []struct {
+		s        StrSet
+		input    []string
+		expected []bool
+	}{
+		{
+			s:        NewStrFromArr([]string{"a", "b", "c"}),
+			input:    []string{"a", "b", "c", "d"},
+			expected: []bool{true, true, true, false},
+		},
+		{
+			s:        NewStr(),
+			input:    []string{"s"},
+			expected: []bool{false},
+		},
+	}
+
+	for _, tc := range tests {
+		for i, el := range tc.input {
+			if tc.s.Contains(el) != tc.expected[i] {
+				t.Errorf("Expected: %v for %s, Got: %v", tc.expected[i], el, tc.s.Contains(el))
+			}
+		}
+	}
+}
+
 func TestStrSetDifference(t *testing.T) {
 	tests := []struct {
 		a        StrSet

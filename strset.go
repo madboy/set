@@ -76,6 +76,14 @@ func (s *StrSet) RemoveAll(elements ...string) {
 	}
 }
 
+// Contains returns if element is in set or not
+func (s *StrSet) Contains(element string) bool {
+	if _, ok := s.els[element]; !ok {
+		return false
+	}
+	return true
+}
+
 // Difference returns all elements in s that aren't in o
 func (s *StrSet) Difference(o *StrSet) StrSet {
 	n := NewStr()

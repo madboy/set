@@ -67,6 +67,14 @@ func (s *IntSet) RemoveAll(elements ...int) {
 	}
 }
 
+// Contains returns if element is in set or not
+func (s *IntSet) Contains(element int) bool {
+	if _, ok := s.els[element]; !ok {
+		return false
+	}
+	return true
+}
+
 // Difference returns all elements in s that aren't in o
 func (s *IntSet) Difference(o *IntSet) IntSet {
 	n := NewInt()
