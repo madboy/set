@@ -45,9 +45,7 @@ func NewIntFromArr(arr []int) IntSet {
 
 // Add element to the IntSet
 func (s *IntSet) Add(element int) {
-	if !s.els[element] {
-		s.els[element] = true
-	}
+	s.els[element] = true
 }
 
 // AddAll adds all elements to the set

@@ -54,9 +54,7 @@ func NewStrFromArr(arr []string) StrSet {
 
 // Add element to the StrSet
 func (s *StrSet) Add(element string) {
-	if !s.els[element] {
-		s.els[element] = true
-	}
+	s.els[element] = true
 }
 
 // AddAll adds all elements to the set
